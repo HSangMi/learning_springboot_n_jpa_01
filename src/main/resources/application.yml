@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/./../jpashop
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create # 어플리케이션 실행 시 테이블 생성 (엔티티를 다 지우고 재생성 )
+    properties:
+      hibernate:
+#        show_sql: true # System.out으로 찍힘 => 운영에서 x
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+
+logging:
+  level:
+    org.hibernate.SQL: debug  # 하이버네이트가 날리는 작업을 debug모드로 확인가능
+  #  org.hibernate.type: trace #스프링 부트 2.x, hibernate5
+    org.hibernate.orm.jdbc.bind: trace #스프링 부트 3.x, hibernate
