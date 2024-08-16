@@ -9,8 +9,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.*;
-
 @RunWith(SpringRunner.class) // junit한테 Spring 관련된 테스트라는 것을 명시
 @SpringBootTest // springboot로 테스트를 돌려야함.
 public class MemberRepositoryTest {
@@ -24,23 +22,23 @@ public class MemberRepositoryTest {
     @Rollback(false)// * Test에서 @Transasctional은 기본적으로 테스트가 끝난 후 rollback 함
     public void testMember() throws Exception {
         // given
-        Member member = new Member();
-        member.setUsername("memberA");
+        Member_practice memberPractice = new Member_practice();
+        memberPractice.setUsername("memberA");
 
         // when
-        Long savedId = memberRepository.save(member);
-        Member findMember = memberRepository.find(savedId);
+        Long savedId = memberRepository.save(memberPractice);
+        Member_practice findMemberPractice = memberRepository.find(savedId);
 
         //then
-        Assertions.assertThat(findMember.getId()).isEqualTo(member.getId());
-        Assertions.assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
+        Assertions.assertThat(findMemberPractice.getId()).isEqualTo(memberPractice.getId());
+        Assertions.assertThat(findMemberPractice.getUsername()).isEqualTo(memberPractice.getUsername());
 
         // Q. 저장한 거랑 조회한거랑 같을까? 다를까?
-        Assertions.assertThat(findMember).isEqualTo(member);
+        Assertions.assertThat(findMemberPractice).isEqualTo(memberPractice);
         // A. 같은 트랜잭션 안에서, 저장을 하고 조회를 했기때문에, 영속성 컨텍스트가 똑같음
         // 같은 영속성 컨텍스트 안에서는 ID 값이 똑같으면, 같은 엔티티로 식별( 조회쿼리조차 나가지않음, 1차 캐시에서 꺼내옴 )
 
-        System.out.println("findMember = " + findMember);
-        System.out.println("member = " + member);
+        System.out.println("findMember = " + findMemberPractice);
+        System.out.println("member = " + memberPractice);
     }
 }

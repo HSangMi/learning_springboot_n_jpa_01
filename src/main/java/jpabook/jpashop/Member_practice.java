@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Entity
 @Getter @Setter
-public class Member {
+public class Member_practice {
 
     @Id @GeneratedValue //@GneratedValue : 자동생성
     private Long id;

@@ -15,9 +15,9 @@ public class MemberRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public Long save(Member member) {
-        em.persist(member);
-        return member.getId();
+    public Long save(Member_practice memberPractice) {
+        em.persist(memberPractice);
+        return memberPractice.getId();
         /*
         * member가 아닌 id만 리턴하는 이유
             * 추천 코드 스타일 : 커맨드와 쿼리를 분리해라
@@ -26,8 +26,8 @@ public class MemberRepository {
          */
     }
 
-    public Member find(Long id) {
-        return em.find(Member.class, id);
+    public Member_practice find(Long id) {
+        return em.find(Member_practice.class, id);
     }
 
     // Tips : 테스트코드 만들기 단축키 -  shift ctrl T
