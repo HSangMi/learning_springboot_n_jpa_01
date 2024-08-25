@@ -12,10 +12,10 @@ public class OrderItem {
     @Column(name="order_item_id")
     private long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id ")
     private Item item;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id") // 매핑할 컬럼명(fk)
     private Order order;
 

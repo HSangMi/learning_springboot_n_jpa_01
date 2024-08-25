@@ -17,7 +17,7 @@ public class Order {
     private Long id;
 
     // 다대일 관계
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="member_id")  // 매핑을 뭘로한거냐 (FK id - 테이블의 컬럼이름으로)
     private Member member;
     /*
@@ -29,7 +29,8 @@ public class Order {
        멤버가 바꼈는데 Order테이블의 멤버값이 변하는건 이상하자나
     연관관계주인은 해줄거없고, 거울 필드에서 mappedby 추가
      */
-    @OneToMany(mappedBy="order")    // OrderItem객체의 order필드에 의해 맵핑됨
+    @OneToMany(mappedBy="order", cascade = CascadeType.ALL)
+    // mappedBy : OrderItem객체의 order필드에 의해 맵핑됨
     private List<OrderItem> orderItem = new ArrayList<>();
 
     /*
@@ -37,7 +38,7 @@ public class Order {
     access를 자주하는곳에 fk를 두는게 괜찮음 : 주로 주문에 관련된 주소정보를 호출함
     Order에 delivery의 id를 fk로 가짐! => Order가 연관관계의 주인
     */
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
@@ -47,4 +48,18 @@ public class Order {
 
     // 주문상태를 나타내는 enum
     private OrderStatus status; // ORDER, CANCLE
+
+    //== 연관관계 (편의) 메서드 ==//
+    public void setMember(Member member) {
+        this.member = member;
+        member.getOrders().add(this);
+    }
+    public void addOrderItem(OrderItem orderItem) {
+        this.orderItem.add(orderItem);
+        orderItem.setOrder(this);
+    }
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+        delivery.setOrder(this);
+    }
 }

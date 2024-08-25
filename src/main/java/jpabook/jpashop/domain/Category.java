@@ -35,11 +35,18 @@ public class Category {
 
     // 카테고리 계층구조를 표현해보자 : 혼자서 양방향 매핑
     // 부모 카테고리
-    @ManyToOne // 자식N : 부모 1
+    @ManyToOne(fetch = FetchType.LAZY) // 자식N : 부모 1
     @JoinColumn(name = "parent_id") // 매핑할 컬럼명(fk)
     private Category parent;
 
     // 자식 카테고리
     @OneToMany(mappedBy="parent")   // 맵핑된 필드명(객체)
     private List<Category> child = new ArrayList<>();
+
+    //== 연관관계 메서드 ==//
+    public void addChildCategory(Category category) {
+        child.add(category);
+        category.setParent(this);
+    }
+
 }
