@@ -13,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest // springboot로 테스트를 돌려야함.
 public class MemberRepositoryTest {
     // MemberRepository가 잘 동작하는지 테스트해보자
-    @Autowired MemberRepository memberRepository;
+    @Autowired
+    MemberRepository_practice memberRepository;
 
     // Tips : tdd - given-when-then live templates에 추가해서 사용!
     @Test

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 // @Repository : 엔티티를 찾아주는 애 (like dao), 스프링에서 제공하는 컴포넌스 스캔에 대상이되는 어노테이션
 @Repository
-public class MemberRepository {
+public class MemberRepository_practice {
 
     // JPA를 쓰기때문에, 엔티티매니저가 필요!
     // 스프링 부트를 쓰기때문에, 모든게 스프링 컨테이너 위에서 동작
