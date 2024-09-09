@@ -8,9 +8,12 @@ import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.repository.ItemRepository;
 import jpabook.jpashop.repository.MemberRepository;
 import jpabook.jpashop.repository.OrderRepository;
+import jpabook.jpashop.repository.OrderSearch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /*
  # 도메인 모델 패턴(JPA, ORM 사용 시 좋음)
@@ -67,8 +70,13 @@ public class OrderService {
     public void cancelOrder(Long orderId) {
         // 주문 엔티티 조회
         Order order = orderRepository.findOne(orderId);
-        // 주문 취소
+        // 주  문 취소
         order.cancel();
+    }
+
+    public List<Order> findOrders(OrderSearch orderSearch) {
+        return orderRepository.findAllByString(orderSearch);
+        // 단순 조회, 위임서비스라면, 컨트롤러에서 리포지토리를 호출해도 괜찮다고 봄
     }
 
 }
