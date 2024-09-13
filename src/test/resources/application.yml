@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create # 어플리케이션 실행 시 테이블 생성 (엔티티를 다 지우고 재생성 ) # 디폴트는 create-drop
+      ddl-auto: none # create : 어플리케이션 실행 시 테이블 생성 (엔티티를 다 지우고 재생성 ) # 디폴트는 create-drop
     properties:
       hibernate:
 #        show_sql: true # System.out으로 찍힘 => 운영에서 x

@@ -84,4 +84,22 @@ public class MemberService {
         return memberRepository.findOne(memberId);
     }
 
+    @Transactional
+    public void update(Long id, String name) {
+        // 엔티티를 업데이트할 땐 변경감지로 업데이트할 것!!
+        Member member = memberRepository.findOne(id);
+        member.setName(name);
+        /*
+        동작 요약
+        1. 트랜잭션 시작
+        2. memberRepository.findOne(id)
+           : jpa가 영속성 컨텍스트에서 아이디로 찾음 => 없으면 db에서 조회하여 반환
+        3. 조회한 엔티티는 영속성 컨텍스트에 등록되어 영속상태가 되고
+        4. setName()후 MemberService.update가 종료되면서, Spring의 AOP가 동작하면서,
+        5. @Transactional에 의해, 트랜잭션에 관련된 AOP가 끝나는 시점에, 트랜잭션 커밋이 일어남
+        6. 그때 JPA가 영속성컨텍스트를 flush하고 데이터베이스 트랜잭션 커밋을 함
+        */
+
+
+    }
 }
