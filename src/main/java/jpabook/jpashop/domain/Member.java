@@ -1,5 +1,6 @@
 package jpabook.jpashop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class Member {
     @Embedded // 내장타입을 포함하고있다는 어노테이션
     private Address address;
 
+    @JsonIgnore
     // 일대다 : 한 사람이 여러 주문을 함.
     @OneToMany(mappedBy = "member") // mappedBy : 연관관계 주인이 아니에요! 매핑된 거울이에요!
     // Order 객체의 member 필드에 의해 매핑된거야! => 읽기전용

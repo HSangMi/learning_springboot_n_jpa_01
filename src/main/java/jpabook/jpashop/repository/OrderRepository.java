@@ -1,12 +1,9 @@
 package jpabook.jpashop.repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
-import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.domain.Order;
-import jpabook.jpashop.domain.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -91,4 +88,31 @@ public class OrderRepository {
         TypedQuery<Order> orderTypedQuery = em.createQuery(cq).setMaxResults(1000);
         return orderTypedQuery.getResultList();
     }
+
+    /**
+     fetch join을 사용하면, select할 떄 한번에 가져옴(지연로딩 x)
+     기술적으론 sql에서 join을 하지만, jpa에서 fetch join으로 명명함
+     */
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class
+        ).getResultList();
+    }
+
+    /**
+     * jpa에서  dto로 바로 반환받기
+     * new 명령어를 사용해서 jpql의 결과를 DTO로 즉시 반환
+     * => 애플리케이션 네트워크용량 최적화(생각보다 미비)
+     *      , api 스펙에 맞춘 코드가 repository에 들어가는게 단점
+     */
+//    public List<OrderSimpleQueryDto> findOrderDto() {
+//        return em.createQuery(
+//                "select new jpabook.jpashop.repository.order.simpleQuery.OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, d.address)" +
+//                    "from Order o" +
+//                    " join o.member m" +
+//                    " join o.delivery d", OrderSimpleQueryDto.class)
+//                .getResultList();
+//    }
 }
