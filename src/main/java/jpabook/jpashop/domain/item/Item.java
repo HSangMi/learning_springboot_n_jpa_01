@@ -5,10 +5,12 @@ import jpabook.jpashop.domain.Category;
 import jpabook.jpashop.exception.NotEnoughStockException;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@BatchSize(size=100)
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)// 상속관계 전략을 부모클래스에 설정해줘야함
 @DiscriminatorColumn(name = "dtype") // 어떤 컬럼으로 자식클래스를 구분할지 선언

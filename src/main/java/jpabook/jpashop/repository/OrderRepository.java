@@ -115,4 +115,40 @@ public class OrderRepository {
 //                    " join o.delivery d", OrderSimpleQueryDto.class)
 //                .getResultList();
 //    }
+
+    public List<Order> findAllWithItem() {
+        return em.createQuery(
+                "select distinct o from Order o" +   // distinct 키워드를 추가해 줘야 뻥튀기된 Order를 줄여줌
+                        " join fetch o.member m" +      // many to one
+                        " join fetch  o.delivery d" +   // one to one
+                        " join fetch o.orderItem oi" +  // one to many?  데이터가 뻥튀기됨 !! orderItem 기준으로 !! => distinct
+                        " join fetch oi.item i ", Order.class)
+                /*
+                 * # jpa에서의 distinct #
+                 * DB의 distinct와 동일한 역할(쿼리에 distinct를 날려줌)
+                 *      +
+                 * 루트 엔티티가 중복인 경우에 중복을 걸러서 컬렉션에 담아줌
+                 *
+                 *  DB의 경우엔 조회된 한 row가 모두 일치해야 중복제거가 되는데, jpa에서는 order의 id가 같은 값이면 중복제거해줌
+
+
+                 *
+                 * */
+
+                .getResultList();
+    }
+
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class)
+                .setFirstResult(offset) // to_One 관계만 fetch join 했기때문에 페이징 가능!
+                .setMaxResults(limit)
+                .getResultList();
+        // jpa.properties.default_batch_fetch_size를 설정하고, _to_one 관계를 생략하고 조회해도 되긴함
+        // => default_batch_fetch_size 옵션이 동일하게 적용받기때문에, fetch join해서 가져오던 애들도 in쿼리로 조회 해옴.
+        // => 네트워크 비용이 좀더 발생하므로 to_one관계는 미리 fetch join으로 처리하는게 이득!
+
+    }
 }

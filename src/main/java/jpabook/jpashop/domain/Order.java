@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class Order {
        멤버가 바꼈는데 Order테이블의 멤버값이 변하는건 이상하자나
     연관관계주인은 해줄거없고, 거울 필드에서 mappedby 추가
      */
+    @BatchSize(size=1000)
     @OneToMany(mappedBy="order", cascade = CascadeType.ALL)
     // mappedBy : OrderItem객체의 order필드에 의해 맵핑됨
     private List<OrderItem> orderItem = new ArrayList<>();
