@@ -6,6 +6,8 @@ import jpabook.jpashop.domain.OrderItem;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.order.query.OrderQueryDto;
+import jpabook.jpashop.repository.order.query.OrderQueryRepository;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 public class OrderApiController {
 
      private final OrderRepository orderRepository;
+     private final OrderQueryRepository orderQueryRepository;
 
     /** V1: 엔티티 그대로반환  */
      @GetMapping("/api/v1/orders")
@@ -130,6 +133,17 @@ public class OrderApiController {
      * ( 잘라서 조회해올거면 DB조회시 페이징으로 걸러야지, 어플리케이션까지 와서 거를일은 거의 없음), 즉 out of memory가 날 확률은 size 100이나 1000이나 거의 같음
      *
      */
+
+    @GetMapping("/api/v4/orders")
+    public List<OrderQueryDto> ordersV4(){
+        return orderQueryRepository.findOrderQueryDtos();
+    }
+
+    @GetMapping("/api/v5/orders")
+    public List<OrderQueryDto> ordersV5(){
+        return orderQueryRepository.findAllByDto_optimiztion();
+    }
+
 
     @Getter // 또는 @Data
      static class OrderDto{
