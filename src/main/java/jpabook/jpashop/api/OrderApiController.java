@@ -6,6 +6,7 @@ import jpabook.jpashop.domain.OrderItem;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.order.query.OrderFlatDto;
 import jpabook.jpashop.repository.order.query.OrderQueryDto;
 import jpabook.jpashop.repository.order.query.OrderQueryRepository;
 import lombok.Data;
@@ -143,6 +144,40 @@ public class OrderApiController {
     public List<OrderQueryDto> ordersV5(){
         return orderQueryRepository.findAllByDto_optimiztion();
     }
+    @GetMapping("/api/v6/orders")
+    public List<OrderFlatDto> ordersV6(){
+        List<OrderFlatDto> flats = orderQueryRepository.findAllByDto_flat();
+        return flats;
+    }
+
+    /**
+     * 총정리!!
+     *
+     * ** 권장 순서 **
+     * 1. 엔티티 조회 방식으로 접근(엔티티조회 후 DTO로 변환해서 반환)
+     *  1-1. 페치 조인으로 쿼리수를 최적화
+     *  1-2 컬렉션 최적화
+     *      1-2-1. 페이징이 필요한경우, @BatchSize로 최적화
+     *      1-2-2. 페이징이  필요없는경우 페치 조인 사용!
+     * 2. 엔티티 조회로 안될경우, DTO 방식으로 조회
+     * 3. DTO 조회방식도 안되면, NativeSQL or 스프링 jdbcTemplate
+     *
+     * ** 엔티티 조회방식의 장점 **
+     * - 페치조인 사용 가능, batchSize 옵션을 통해 코드를 거의 수정하지 않고 성능최적화를 시도 할 수 있다
+     * - JPA가 많은부분을 최적화 해주기 때문에, 단순한 코드를 유지하면서, 성능을 최적화 할 수 있다.
+     * - DTO 조회방식은 SQL을 직접 다루는 것과 유사하기 떄문에, 둘 사이(성능 최적화 vs 코드복잡도)에 줄타기를 해야함.
+     *
+     *      - 참고 : 엔티티는 직접 캐싱을 하면 안된다!! 하려면 DTO를 해야지!!
+     *            => 영속성 컨텍스트에서 관리 되고 있기 때문에, 캐시에 잘못올라가있으면,,, 골치아파짐
+     *            => 엔티티를 캐싱하는 방법 중 Hibernate 2차 캐시가 있긴한데, 실무에 적용하기 어려움!
+     *
+     * ** DTO 조회 방식의 선택지 **
+     * - DTO로 조회하는 방법도 각각 장단이 있음
+     * - V4의 경우 코드가 단순, 특정 단건조회 일 때는 이 방식이 좋다.(1+N)
+     * - V5의 경우, V4에 비해 성능 최적화 (1+1), 코드는 더 복잡
+     * - V6는 (V4,V5와 완전히 다른방식)데이터를 중복해서 가져오는 것과 쿼리를 한번만 요청하는 것 사이의 트레이드 오프가 있음. 페이징 불가
+     *
+     */
 
 
     @Getter // 또는 @Data

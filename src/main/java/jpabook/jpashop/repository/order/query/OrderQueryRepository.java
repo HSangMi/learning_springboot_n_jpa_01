@@ -103,4 +103,24 @@ public class OrderQueryRepository {
     private static List<Long> toOrderIds(List<OrderQueryDto> result) {
         return result.stream().map(o -> o.getOrderId()).collect(Collectors.toList());
     }
+
+    public List<OrderFlatDto> findAllByDto_flat () {
+        return em.createQuery(
+                "select new jpabook.jpashop.repository.order.query.OrderFlatDto(o.id, m,name, o.orderDate, o.status, d.address, i.name, oi.orderPrice,oi.count )" +
+                        " from Order o" +
+                        " join o.member m" +
+                        " join o.delivery d" +
+                        " join o.orderItem oi" + // 뻥튀기 !
+                        " join oi.item i", OrderFlatDto.class)
+                .getResultList();
+        // 스트림 중복처리는 생략
+        /**
+         * 장점
+         *  - 쿼리 한번
+         * 단점
+         *  - 쿼리는 한번이지만, 조인으로 인해 DB에서 애플리케이션에 전달하는 데이터에 중복 데이터가 추가되므로 상황에 따라 V5보다 더 느릴 수도 있다
+         *  - 애프리케이션에서 추가작업이 크다(steam으로 중복제거하고 컬렉션으로합치고,,)
+         *  - 페이징 불가능
+         */
+    }
 }
