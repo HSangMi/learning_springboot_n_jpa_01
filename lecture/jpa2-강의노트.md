@@ -42,7 +42,40 @@
 * 고객서비스 기반의 트래픽이 많은 실시간 api의 경우 off
 * admin 시스템은 그냥 ON해서 씀
 
+## QueryDSL 소개
+* QueryDsl추가하기
+* build.gradle (버전별 상이함!!!)
+  ```build.gradle
+  // 라이브러리 추가
+    implementation 'com.querydsl:querydsl-jpa'
+  implementation 'com.querydsl:querydsl-apt'
+    
+  // 플러그인 받을 수 있게 dependency 추가
+  buildscript {
+    dependencies {
+      classpath("gradle.plugin.com.ewerk.gradle.plugins:querydsl-plugin:1.0.10")
+    }
+  }
+  // 플러그인 적용
+  apply plugin: "com.ewerk.gradle.plugins.querydsl"
 
+  // generated된 Q파일을 어디다 위치할지 셋팅 필요
+  def querydslDir = 'src/main/generated'
+
+  querydsl {
+    library = "com.querydsl:querydsl-apt"
+    jpa = true
+    querydslSourcesDir = querydslDir
+  }
+  sourceSets{
+    main {
+      java{
+        srcDirs = ['src/main.java', querydslDir]
+        }
+      }
+  }
+  ```
+* gradle > task > other > compileQuerydsl 실행
 
 
 ## 단축키 메모

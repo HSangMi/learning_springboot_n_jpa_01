@@ -47,7 +47,7 @@ public class MemberServiceTest { // tips 테스트 class 만들기 ctrl + shift 
         
         //then
         em.flush();
-        assertEquals(member, memberRepository.findOne(member.getId()));
+        assertEquals(member, memberRepository.findById(member.getId()));
     }
 
     @Test

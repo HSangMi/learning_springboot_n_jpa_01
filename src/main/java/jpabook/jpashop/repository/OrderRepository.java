@@ -1,9 +1,14 @@
 package jpabook.jpashop.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.domain.OrderStatus;
+import jpabook.jpashop.domain.QMember;
+import jpabook.jpashop.domain.QOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -11,11 +16,20 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jpabook.jpashop.domain.QMember.member;
+import static jpabook.jpashop.domain.QOrder.order;
+
 @Repository
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class OrderRepository {
 
     private final EntityManager em;
+    private final JPAQueryFactory query;
+
+    public OrderRepository(EntityManager em){
+        this.em = em;
+        this.query = new JPAQueryFactory(em);
+    }
     public void save(Order order) {
         em.persist(order);
     }
@@ -150,5 +164,34 @@ public class OrderRepository {
         // => default_batch_fetch_size 옵션이 동일하게 적용받기때문에, fetch join해서 가져오던 애들도 in쿼리로 조회 해옴.
         // => 네트워크 비용이 좀더 발생하므로 to_one관계는 미리 fetch join으로 처리하는게 이득!
 
+    }
+
+    /**
+     * QueryDsl로 동적쿼리 작성해보기!
+     * @param orderSearch
+     * @return
+     */
+    public List<Order> findAll2(OrderSearch orderSearch){
+//        JPAQueryFactory query = new JPAQueryFactory(em);
+
+        return query.select(order)
+                .from(order)
+                .join(member)
+                .where(statusEq(orderSearch.getOrderStatus()), nameLike(orderSearch.getMemberName()))
+//                .where(member.name.like(orderSearch.getMemberName())) // 이건 정적쿼리
+//                .where(order.status.eq(orderSearch.getOrderStatus())) // 이건 정적쿼리
+                .limit(1000)
+                .fetch();
+    }
+    private BooleanExpression statusEq(OrderStatus statusCond){
+        if(statusCond == null) return null;
+        return order.status.eq(statusCond);
+    }
+
+    private BooleanExpression nameLike(String memberName){
+        if(!StringUtils.hasText(memberName)){
+            return null;
+        }
+        return member.name.like("%"+memberName+"%");
     }
 }
