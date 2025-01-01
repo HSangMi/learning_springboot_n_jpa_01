@@ -81,13 +81,13 @@ public class MemberService {
     }
 //    @Transactional(readOnly = true)
     public Member findOne(Long memberId){
-        return memberRepository.findOne(memberId);
+        return memberRepository.findById(memberId).get();
     }
 
     @Transactional
     public void update(Long id, String name) {
         // 엔티티를 업데이트할 땐 변경감지로 업데이트할 것!!
-        Member member = memberRepository.findOne(id);
+        Member member = memberRepository.findById(id).get();
         member.setName(name);
         /*
         동작 요약
